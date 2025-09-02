@@ -7,6 +7,32 @@ on:
         description: "The Operator branch/tag to checkout when creating the image."
         required: true
         default: "main"
+      channels:
+        description: "The Operator channel to create OLM bundle."
+        required: true
+        default: "main"
+  workflow_calls:
+    inputs:
+      ref:
+        type: string
+        default: ${{ github.ref }}
+      repository:
+        type: string
+        default: ${{ github.repository }}
+      rel_version:
+        description: "The Operator release version."
+        type: string
+        default: latest
+      prev_version:
+        description: "The Operator previous version."
+        type: string
+        default: latest
+            
+env:
+  GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}   
+  release-version: ${{ github.event.inputs.rel_version }}
+  replace_version: ${{ github.event.inputs.prev_version }}
+
 
 jobs:
   release:
@@ -32,8 +58,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_TOKEN }}
+          username: ${{ secrets.PRIVATE_QUAY_USERNAME }}
+          password: ${{ secrets.PRIVATE_QUAY_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -41,6 +67,84 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/infinispan/operator:${{ github.event.inputs.ref }}
+          tags: quay.io/repository/pminz/infinispan-operator:${{ github.event.inputs.ref }}
           build-args: |
             OPERATOR_VERSION=${{ github.event.inputs.ref }}
+      
+#      - name: Create OLM Bundle
+#        run:  |
+#            cd operator
+#            rm -rf bundle
+#            TAG="${{ github.event.inputs.ref }}"
+#            release-version=$(echo "$TAG" | sed 's/\.Final$//')
+#            make operator-sdk
+#            make bundle VERSION=${{ env.release-version }} CHANNELS=${{ github.event.inputs.channels }} DEFAULT_CHANNEL=${{ github.event.inputs.channels }} IMG=quay.io/infinispan/operator:${{ github.event.inputs.ref }}
+#
+#      - name: Checkout community-operators repo
+#        uses: actions/checkout@v3
+#        with:
+#          repository: pminz/community-operators
+#          path: community-operators
+#          ref: main
+#
+#      - name: Copy contents of bundle/ 
+#        run: |
+#          cd community-operators
+#          mkdir -p operators/infinispan/${{ env.release-version }}
+#          cp -R ../operator/bundle/* operators/infinispan/${{ env.release-version }}
+#          git add operators/infinispan/${{ env.release-version }}
+#          git commit -s -m "Infinispan Operator  ${{ env.release-version }}"
+#
+#      - name: Create Pull Request to community-operators repo from forked repository 
+#        id: cpr
+#        uses: peter-evans/create-pull-request@v4
+#        with: 
+#          token: ${{ secrets.PAT_TOKEN }}
+#          path: community-operators
+#          commit-message: 'Infinispan Operator ${{ env.release-version }}'
+#          committer: infinispan-qe-bot <q*@infinispan.org>
+#          author: infinispan-qe-bot <q*@infinispan.org>
+#          branch: pr_request
+#          delete-branch: true
+#          push-to-fork: infinispan-qe-bot/community-operators
+#          title: 'Infinispan Operator ${{ env.release-version }}'
+#          body: 'Infinispan Operator ${{ env.release-version }}'
+#
+#      - name: Checkout community-operators-prod repo
+#        uses: actions/checkout@v3
+#        with:
+#          repository: redhat-openshift-ecosystem/community-operators-prod
+#          path: community-operators-prod
+#          ref: main
+#
+#      - name: Copy contents of bundle/ and issue PRs
+#        run: |
+#          cd community-operators-prod
+#          mkdir -p operators/infinispan/${{ env.release-version }}
+#          cp -R ../operator/bundle/* operators/infinispan/${{ env.release-version }}
+#          git add operators/infinispan/${{ env.release-version }}
+#          git commit -s -m "Infinispan Operator  ${{ env.release-version }}"
+#
+#      - name: Create Pull Request
+#        id: cpr1
+#        uses: peter-evans/create-pull-request@v4
+#        with: 
+#          token: ${{ secrets.PAT_TOKEN }}
+#          path: community-operators-prod
+#          commit-message: 'Infinispan Operator ${{ env.release-version }}'
+#          committer: infinispan-qe-bot <q*@infinispan.org>
+#          author: infinispan-qe-bot <q*@infinispan.org>
+#          branch: pr_request
+#          delete-branch: true
+#          push-to-fork: infinispan-qe-bot/community-operators-prod
+#          title: 'Infinispan Operator ${{ env.release-version }}'
+#          body: 'Infinispan Operator ${{ env.release-version }}'
+#
+#      - name: Trigger Post Release job
+#        uses: cardinalby/schedule-job-action@v1
+#        with:
+#         ghToken: ${{ secrets.PAT_TOKEN }}
+#         targetBranch: 'main'
+#         templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
+#         targetYmlFileName: publish-main.yaml
+#         copyEnvVariables: release-version replace_version
