@@ -61,15 +61,15 @@ jobs:
           username: ${{ secrets.PRIVATE_QUAY_USERNAME }}
           password: ${{ secrets.PRIVATE_QUAY_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: quay.io/repository/pminz/infinispan-operator:${{ github.event.inputs.ref }}
-          build-args: |
-            OPERATOR_VERSION=${{ github.event.inputs.ref }}
+#      - name: Build and push
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          platforms: linux/amd64,linux/arm64
+#          push: true
+#          tags: quay.io/repository/pminz/infinispan-operator:${{ github.event.inputs.ref }}
+#          build-args: |
+#            OPERATOR_VERSION=${{ github.event.inputs.ref }}
       
 #      - name: Create OLM Bundle
 #        run:  |
@@ -79,13 +79,19 @@ jobs:
 #            release-version=$(echo "$TAG" | sed 's/\.Final$//')
 #            make operator-sdk
 #            make bundle VERSION=${{ env.release-version }} CHANNELS=${{ github.event.inputs.channels }} DEFAULT_CHANNEL=${{ github.event.inputs.channels }} IMG=quay.io/infinispan/operator:${{ github.event.inputs.ref }}
-#
-#      - name: Checkout community-operators repo
-#        uses: actions/checkout@v3
-#        with:
-#          repository: pminz/community-operators
-#          path: community-operators
-#          ref: main
+
+      - name: Checkout community-operators repo
+        uses: actions/checkout@v3
+        with:
+          repository: pminz/community-operators
+          path: community-operators
+          ref: main
+
+      - name: Copy contents of bundle/ and issue PRs
+        run: |
+          ls -lrt
+          pwd
+          tree
 #
 #      - name: Copy contents of bundle/ 
 #        run: |
