@@ -11,11 +11,11 @@ on:
         description: "The Operator channel to create OLM bundle."
         required: true
         default: "main"
-  workflow_calls:
+  workflow_call:
     inputs:
       ref:
         type: string
-        default: main
+        default: ${{ github.ref }}
       repository:
         type: string
         default: ${{ github.repository }}
