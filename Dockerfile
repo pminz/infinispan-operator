@@ -25,7 +25,7 @@ COPY pkg/ pkg/
 
 RUN CGO_ENABLED=1 GOOS=linux GO111MODULE=on \
     go build -a -o /bin/infinispan-operator \
-    -ldflags="-X 'github.com/infinispan/infinispan-operator/launcher.Version=${OPERATOR_VERSION}'" -gcflags="${SKAFFOLD_GO_GCFLAGS}" main.go
+    -ldflags="-X 'github.com/pminz/infinispan-operator/launcher.Version=${OPERATOR_VERSION}'" -gcflags="${SKAFFOLD_GO_GCFLAGS}" main.go
 
 FROM registry.access.redhat.com/ubi9/ubi-micro
 COPY --from=build /bin/infinispan-operator /usr/local/bin/infinispan-operator
