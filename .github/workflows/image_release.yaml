@@ -7,7 +7,16 @@ on:
         description: "The Operator branch/tag to checkout when creating the image."
         required: true
         default: "main"
+      tag:
+        type: string
+        default: latest
 
+env:
+  GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}   
+  release-version: ${{ github.event.inputs.tag }}
+  #replace_version: ${{ github.event.inputs.prev_version }}
+
+  
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -17,13 +26,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.ref }}
+          token: ${{ env.GITHUB_TOKEN }}
           path: operator
 
-      #- name: Tag the release
-      #  run: |
-      #    cd operator
-      #    git tag -a v${{ env.release-version}} -m "Release Operator:: ${{ env.release-version}}"
-      #    git push origin --tags
+      - name: Tag the release
+        run: |
+          cd operator
+          git tag -a ${{ env.release-version}} -m "Release Operator:: ${{ env.release-version}}"
+          git push origin ${{ env.release-version}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -42,15 +52,15 @@ jobs:
           username: ${{ secrets.PRIVATE_QUAY_USERNAME }}
           password: ${{ secrets.PRIVATE_QUAY_TOKEN }}
 
-      #- name: Build and push
-      #  uses: docker/build-push-action@v6
-      #  with:
-      #    context: .
-      #    platforms: linux/amd64,linux/arm64
-      #    push: true
-      #    tags: quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}
-      #    build-args: |
-      #      OPERATOR_VERSION=${{ github.event.inputs.ref }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}
+          build-args: |
+            OPERATOR_VERSION=${{ github.event.inputs.ref }}
 
       - name: Create OLM Bundle
         run:  |
