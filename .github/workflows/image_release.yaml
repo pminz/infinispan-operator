@@ -71,7 +71,7 @@ jobs:
         run:  |
             rm -rf bundle bundle.Dockerfile
             cd operator
-            make bundle VERSION=${{ github.event.inputs.ref }} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}.Final
+            make bundle VERSION=${{ env.release-version}} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/pminz/infinispan-operator:${{ env.release-version}}.Final
 
       - name: Checkout community-operators repo
         uses: actions/checkout@v3
