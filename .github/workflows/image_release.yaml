@@ -63,9 +63,9 @@ jobs:
           context: operator
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}
+          tags: quay.io/pminz/infinispan-operator:${{ env.release-version}}
           build-args: |
-            OPERATOR_VERSION=${{ github.event.inputs.ref }}
+            OPERATOR_VERSION=${{ env.release-version}}
 
       - name: Create OLM Bundle
         run:  |
