@@ -18,6 +18,12 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
 
+      - name: Tag the release
+        run: |
+          cd operator
+          git tag -a v${{ env.release-version}} -m "Release Operator:: ${{ env.release-version}}"
+          git push origin --tags
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -41,6 +47,88 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/repository/pminz/infinispan-operator:${{ github.event.inputs.ref }}
+          tags: quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}
           build-args: |
             OPERATOR_VERSION=${{ github.event.inputs.ref }}
+
+      - name: Create OLM Bundle
+        run:  |
+            rm -rf bundle bundle.Dockerfile
+            cd operator
+            make bundle VERSION=${{ github.event.inputs.ref }} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/pminz/infinispan-operator:${{ github.event.inputs.ref }}.Final
+
+      - name: Checkout community-operators repo
+        uses: actions/checkout@v3
+        with:
+          repository: pminz/community-operators
+          path: community-operators
+          ref: main
+
+      - name: Copy contents of bundle/ 
+        run: |
+          cd community-operators
+          mkdir -p operators/infinispan/${{ env.release-version }}
+          ls -lrth
+          pwd
+          cp -R ../operator/bundle/* operators/infinispan/${{ env.release-version }}
+          git add operators/infinispan/${{ env.release-version }}
+          git commit -s -m "Infinispan ${{ env.release-version }}"
+
+      #- name: Create Pull Request to community-operators repo from forked repository 
+      #  id: cpr
+      #  uses: peter-evans/create-pull-request@v4
+      #  with: 
+      #    token: ${{ secrets.PAT_TOKEN }}
+      #    path: community-operators
+      #    commit-message: 'Infinispan Operator ${{ env.release-version }}'
+      #    committer: infinispan-qe-bot <q*@infinispan.org>
+      #    author: infinispan-qe-bot <q*@infinispan.org>
+      #    branch: pr_request
+      #    delete-branch: true
+      #    push-to-fork: infinispan-qe-bot/community-operators
+      #    title: 'Infinispan Operator ${{ env.release-version }}'
+      #    body: 'Infinispan Operator ${{ env.release-version }}'
+
+      - name: Checkout community-operators-prod repo
+        uses: actions/checkout@v3
+        with:
+          repository: pminz/community-operators-prod
+          path: community-operators-prod
+          ref: main
+
+      - name: Copy contents of bundle/ and issue PRs
+        run: |
+          cd community-operators-prod
+          mkdir -p operators/infinispan/${{ env.release-version }}
+          pwd
+          ls -lrth
+          tree
+          cp -R ../operator/bundle/* operators/infinispan/${{ env.release-version }}
+          git add operators/infinispan/${{ env.release-version }}
+          git commit -s -m "Infinispan ${{ env.release-version }}"
+
+      #- name: Create Pull Request
+      #  id: cpr1
+      #  uses: peter-evans/create-pull-request@v4
+      #  with: 
+      #    token: ${{ secrets.PAT_TOKEN }}
+      #    path: community-operators-prod
+      #    commit-message: 'Infinispan Operator ${{ env.release-version }}'
+      #    committer: infinispan-qe-bot <q*@infinispan.org>
+      #    author: infinispan-qe-bot <q*@infinispan.org>
+      #    branch: pr_request
+      #    delete-branch: true
+      #    push-to-fork: infinispan-qe-bot/community-operators-prod
+      #    title: 'Infinispan Operator ${{ env.release-version }}'
+      #    body: 'Infinispan Operator ${{ env.release-version }}'
+
+      #- name: Trigger Post Release job
+      #  uses: cardinalby/schedule-job-action@v1
+      #  with:
+      #   ghToken: ${{ secrets.PAT_TOKEN }}
+      #   targetBranch: 'main'
+      #   templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
+      #   targetYmlFileName: publish-main.yaml
+      #   copyEnvVariables: release-version replace_version
+
+      
