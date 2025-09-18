@@ -18,11 +18,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref }}
 
-      - name: Tag the release
-        run: |
-          cd operator
-          git tag -a v${{ env.release-version}} -m "Release Operator:: ${{ env.release-version}}"
-          git push origin --tags
+      #- name: Tag the release
+      #  run: |
+      #    cd operator
+      #    git tag -a v${{ env.release-version}} -m "Release Operator:: ${{ env.release-version}}"
+      #    git push origin --tags
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
