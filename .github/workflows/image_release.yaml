@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name "pminz"
+          git config --global user.email "pminz@redhat.com"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
