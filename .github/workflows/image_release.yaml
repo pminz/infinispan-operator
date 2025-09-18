@@ -63,7 +63,7 @@ jobs:
           context: operator
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/pminz/infinispan-operator:${{ env.release-version}}
+          tags: quay.io/pminz/infinispan-operator:${{ env.release-version}}.Final
           build-args: |
             OPERATOR_VERSION=${{ env.release-version}}
 
