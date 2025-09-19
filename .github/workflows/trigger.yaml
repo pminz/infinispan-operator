@@ -1,0 +1,42 @@
+name: Test repository dispatch
+
+on:
+ workflow_dispatch:
+    inputs:
+      ref:
+        description: "The git reference to checkout"
+        required: true
+        default: main
+        type: string
+      repository:
+       description: "The git repository to checkout"
+       required: false
+       type: string
+
+jobs:
+  add-operand:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          repository: ${{ inputs.repository }}
+          token: ${{ secrets.PAT_TOKEN }} 
+
+      - name: Test repository-dispatch
+        run : echo "Testing repository dispatch"
+
+      - name: Trigger next workflow if branch is test_release and success
+        if: success() && inputs.ref == 'test_release'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}   
+          repository: pminz/infinispan-operator
+          event-type: trigger-next-workflow
+           client-payload: |
+             {
+               "ref": "${{ github.ref }}",
+               "release-version": "1.2.1"
+             }
