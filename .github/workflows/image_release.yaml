@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.client_payload.ref }}"
+          ref: ${{ github.event.client_payload.ref }}
           token: ${{ secrets.PAT_TOKEN }}  
           path: operator
 
