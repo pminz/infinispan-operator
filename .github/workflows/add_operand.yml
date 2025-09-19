@@ -1,6 +1,17 @@
 name: Add Operand
 
 on:
+ workflow_dispatch:
+    inputs:
+      ref:
+        description: "The git reference to checkout"
+        required: false
+        default: test_release
+        type: string
+      repository:
+       description: "The git repository to checkout"
+       required: false
+       type: string
   #workflow_call:
     #inputs:
     #  image:
@@ -20,24 +31,24 @@ on:
     #    required: false
     #    type: string
 
-  workflow_dispatch:
-    inputs:
-      #image:
-      #  description: "The FQN of the Operand image"
-      #  required: true
-      #  type: string
-      #version:
-      #  description: "The upstream-version of the Operand"
-      #  type: string
-      ref:
-        description: "The git reference to checkout"
-        required: false
-        default: test_release
-        type: string
-      repository:
-       description: "The git repository to checkout"
-       required: false
-       type: string
+ #workflow_dispatch:
+ #   inputs:
+ #     #image:
+ #     #  description: "The FQN of the Operand image"
+ #     #  required: true
+ #     #  type: string
+ #     #version:
+ #     #  description: "The upstream-version of the Operand"
+ #     #  type: string
+ #     ref:
+ #       description: "The git reference to checkout"
+ #       required: false
+ #       default: test_release
+ #       type: string
+ #     repository:
+ #      description: "The git repository to checkout"
+ #      required: false
+ #      type: string
 
 jobs:
   add-operand:
