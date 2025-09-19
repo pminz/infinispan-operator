@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}   
           repository: pminz/infinispan-operator
           event-type: trigger-next-workflow
-           client-payload: |
+          client-payload: |
              {
                "ref": "${{ github.ref }}",
                "release-version": "1.2.1"
