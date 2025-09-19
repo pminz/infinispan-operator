@@ -5,8 +5,8 @@ on:
     inputs:
       ref:
         description: "The git reference to checkout"
-        required: false
-        default: test_release
+        required: true
+        default: main
         type: string
       repository:
        description: "The git repository to checkout"
@@ -90,7 +90,7 @@ jobs:
         run : echo "Testing repository dispatch"
 
       - name: Trigger next workflow if branch is test_release and success
-        if: success() && github.ref == 'refs/heads/test_release'
+        if: success() && inputs.ref == 'test_release'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT_TOKEN }}   
@@ -99,5 +99,5 @@ jobs:
            client-payload: |
              {
                "ref": "${{ github.ref }}",
-               "release-version": "1.2.1",
+               "release-version": "1.2.1"
              }
