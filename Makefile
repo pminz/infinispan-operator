@@ -45,9 +45,9 @@ GOBIN=$(shell go env GOBIN)
 endif
 
 # Utilise the GITHUB_TOKEN in curl requests if set
-ifeq ($(origin GITHUB_TOKEN), environment)
-  ifneq ($(GITHUB_TOKEN),)
-    CURL_AUTHORIZATION := "--header 'authorization: Bearer $(GITHUB_TOKEN)'"
+ifeq ($(origin PAT_TOKEN ), environment)
+  ifneq ($(PAT_TOKEN ),)
+    CURL_AUTHORIZATION := "--header 'authorization: Bearer $(PAT_TOKEN )'"
   endif
 endif
 
