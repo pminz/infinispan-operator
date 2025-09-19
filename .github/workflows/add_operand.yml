@@ -2,42 +2,42 @@ name: Add Operand
 
 on:
   workflow_call:
-    inputs:
-      image:
-        description: "The FQN of the Operand image"
-        required: true
-        type: string
-      version:
-        description: "The upstream-version of the Operand"
-        type: string
-      ref:
-        description: "The git reference to checkout"
-        required: false
-        default: main
-        type: string
-      repository:
-        description: "The git repository to checkout"
-        required: false
-        type: string
+    #inputs:
+    #  image:
+    #    description: "The FQN of the Operand image"
+    #    required: true
+    #    type: string
+    #  version:
+    #    description: "The upstream-version of the Operand"
+    #    type: string
+    #  ref:
+    #    description: "The git reference to checkout"
+    #    required: false
+    #    default: main
+    #    type: string
+    #  repository:
+    #    description: "The git repository to checkout"
+    #    required: false
+    #    type: string
 
   workflow_dispatch:
     inputs:
-      image:
-        description: "The FQN of the Operand image"
-        required: true
-        type: string
-      version:
-        description: "The upstream-version of the Operand"
-        type: string
+      #image:
+      #  description: "The FQN of the Operand image"
+      #  required: true
+      #  type: string
+      #version:
+      #  description: "The upstream-version of the Operand"
+      #  type: string
       ref:
         description: "The git reference to checkout"
         required: false
-        default: main
+        default: test_release
         type: string
       repository:
-        description: "The git repository to checkout"
-        required: false
-        type: string
+       description: "The git repository to checkout"
+       required: false
+       type: string
 
 jobs:
   add-operand:
@@ -49,28 +49,44 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           repository: ${{ inputs.repository }}
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }} 
 
-      - name: Determine Upstream Version
-        run: |
-          if [[ -z "${{ inputs.version }}" ]]; then
-            IMAGE=${{ inputs.image }}
-            TAG=${IMAGE#*:}
-            echo VERSION=${TAG%.Final} >> ${GITHUB_ENV}
-          else
-            echo VERSION=${{ inputs.version }} >> ${GITHUB_ENV}
-          fi
+      #- name: Determine Upstream Version
+      #  run: |
+      #    if [[ -z "${{ inputs.version }}" ]]; then
+      #      IMAGE=${{ inputs.image }}
+      #      TAG=${IMAGE#*:}
+      #      echo VERSION=${TAG%.Final} >> ${GITHUB_ENV}
+      #    else
+      #      echo VERSION=${{ inputs.version }} >> ${GITHUB_ENV}
+      #    fi
+#
+      #- name: Add Operand
+      #  run: ./scripts/ci/add_operand.sh
+      #  env:
+      #    IMAGE: ${{ inputs.image }}
+      #    VERSION: ${{ env.VERSION }}
+#
+      #- name: Commit changes and push to repository
+      #  run: |
+      #    git config user.email "infinispan@infinispan.org"
+      #    git config user.name "Infinispan"
+      #    git add config/manager/manager.yaml documentation/asciidoc/topics/attributes/community-attributes.adoc documentation/asciidoc/topics/supported_operands/
+      #    git commit -m "Add Operand ${{ env.VERSION }}"
+      #    git push
 
-      - name: Add Operand
-        run: ./scripts/ci/add_operand.sh
-        env:
-          IMAGE: ${{ inputs.image }}
-          VERSION: ${{ env.VERSION }}
+      - name: Test repository-dispatch
+        run : echo "Testing repository dispatch"
 
-      - name: Commit changes and push to repository
-        run: |
-          git config user.email "infinispan@infinispan.org"
-          git config user.name "Infinispan"
-          git add config/manager/manager.yaml documentation/asciidoc/topics/attributes/community-attributes.adoc documentation/asciidoc/topics/supported_operands/
-          git commit -m "Add Operand ${{ env.VERSION }}"
-          git push
+      - name: Trigger next workflow if branch is test_release and success
+        if: success() && github.ref == 'refs/heads/test_release'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}   
+          repository: pminz/infinispan-operator
+          event-type: trigger-next-workflow
+           client-payload: |
+             {
+               "ref": "${{ github.ref }}",
+               "release-version": "1.2.1",
+             }
