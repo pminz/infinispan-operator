@@ -71,7 +71,6 @@ jobs:
         run:  |
             rm -rf bundle bundle.Dockerfile
             cd operator
-            make operator-sdk
             make bundle VERSION=${{ env.release-version}} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/pminz/infinispan-operator:${{ env.release-version}}.Final
 
       - name: Checkout community-operators repo
