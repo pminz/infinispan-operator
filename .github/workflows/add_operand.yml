@@ -99,5 +99,5 @@ jobs:
           client-payload: |
              {
                "ref": "${{ github.ref_name }}",
-               "release-version": "1.2.1"
+               "repository": "${{ inputs.repository }}"
              }
