@@ -1,15 +1,16 @@
 name: Image Release
 
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      ref:
-#        description: "The Operator branch/tag to checkout when creating the image."
-#        required: true
-#        default: "main"
-#      tag:
-#        type: string
-#        default: latest
+on:
+ workflow_dispatch:
+   inputs:
+     ref:
+       description: "The Operator branch/tag to checkout when creating the image."
+       required: true
+       default: "main"
+     repository:
+        description: "The git repository to checkout"
+        required: false
+        type: string
 
 on:
   repository_dispatch:
@@ -34,8 +35,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.client_payload.ref }}
-          repository: ${{ github.event.client_payload.repository }}
+          ref: ${{ github.event.client_payload.ref || github.ref }}
+          repository: ${{ github.event.client_payload.repository || github.repository }}
           token: ${{ secrets.PAT_TOKEN }}  
           path: operator
 
