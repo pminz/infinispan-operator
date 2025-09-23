@@ -12,8 +12,7 @@ on:
         required: false
         type: string
 
-on:
-  repository_dispatch:
+ repository_dispatch:
     types: [trigger-next-workflow]
 
 env:
