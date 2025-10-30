@@ -77,7 +77,7 @@ jobs:
       #    git push
 
       - name: Trigger next workflow if branch is main and success
-        if: success() && github.ref_name == 'main'
+        if: success()
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
