@@ -13,7 +13,7 @@ name: Image Release
 #       type: string
 on:
   repository_dispatch:
-    types: [trigger-next-workflow] 
+    types: [release-operator] 
 
 jobs:
   release:
