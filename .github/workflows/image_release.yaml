@@ -1,17 +1,17 @@
 name: Image Release
 
+#on:
+#  workflow_dispatch:
+#   inputs:
+#     ref:
+#       description: "The Operator branch/tag to checkout when creating the image."
+#       required: true
+#       default: "main"
+#     repository:
+#       description: "The git repository to checkout"
+#       required: false
+#       type: string
 on:
-  workflow_dispatch:
-   inputs:
-     ref:
-       description: "The Operator branch/tag to checkout when creating the image."
-       required: true
-       default: "main"
-     repository:
-       description: "The git repository to checkout"
-       required: false
-       type: string
-
   repository_dispatch:
     types: [release-operator] 
 
