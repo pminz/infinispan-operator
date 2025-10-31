@@ -76,8 +76,8 @@ jobs:
       #    git commit -m "Add Operand ${{ env.VERSION }}"
       #    git push
 
-      - name: Trigger next workflow if branch is main and success
-        if: success()
+      - name: Trigger next workflow if branch is test-workflow and success
+        if: success() && inputs.ref == 'test-workflow'
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.PAT }}
