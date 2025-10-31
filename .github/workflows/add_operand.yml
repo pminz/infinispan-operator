@@ -82,7 +82,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           repository: ${{ inputs.repository }}
-          event-type: release-operator
+          event-type: trigger-next-workflow
           client-payload: |
              {
                "ref": "${{ github.ref_name }}",
