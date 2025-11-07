@@ -22,15 +22,15 @@ jobs:
     steps:
       - name: Configure Git
         run: |
-          git config --global user.name "infinispan-qe-bot"
-          git config --global user.email "q*@infinispan.org"
+          git config --global user.name "pminz"
+          git config --global user.email "pminz@redhat.com"
 
       - name: Checkout
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.client_payload.ref || github.ref }}
           repository: ${{ github.event.client_payload.repository || github.repository }}
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          token: ${{ secrets.PAT }}
           path: operator
 
       - name: Get the latest tag and bump the minor version
@@ -61,8 +61,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_TOKEN }}
+          username: ${{ secrets.PRIVATE_QUAY_USERNAME }}
+          password: ${{ secrets.PRIVATE_QUAY_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -70,7 +70,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: quay.io/infinispan/operator:${{ steps.bump_tag.outputs.new_tag }}
+          tags: quay.io/pminz/infinispan-operator:${{ steps.bump_tag.outputs.new_tag }}
           build-args: |
             OPERATOR_VERSION=${{ steps.bump_tag.outputs.new_tag }}
 
@@ -78,12 +78,12 @@ jobs:
         working-directory: operator
         run:  |
            rm -rf bundle bundle.Dockerfile
-           make bundle VERSION=${{ steps.bump_tag.outputs.new_tag }} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/infinispan/operator:${{ steps.bump_tag.outputs.new_tag }}
+           make bundle VERSION=${{ steps.bump_tag.outputs.new_tag }} CHANNELS=stable DEFAULT_CHANNEL=stable IMG=quay.io/pminz/infinispan-operator:${{ steps.bump_tag.outputs.new_tag }}
 
       - name: Checkout community-operators repo
         uses: actions/checkout@v5
         with:
-         repository: k8s-operatorhub/community-operators
+         repository: pminz/community-operators
          path: community-operators
          ref: main
 
@@ -99,21 +99,21 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with: 
-         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
-         path: community-operators
-         commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         committer: infinispan-qe-bot <q*@infinispan.org>
-         author: infinispan-qe-bot <q*@infinispan.org>
-         branch: pr_request
-         delete-branch: true
-         push-to-fork: infinispan-qe-bot/community-operators
-         title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        token: ${{ secrets.PAT }}
+        path: community-operators
+        commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        committer: pminz <pminz@redhat.com>
+        author: pminz <pminz@redhat.com>
+        branch: pr_request
+        delete-branch: true
+        push-to-fork: infinispan-qe-bot/community-operators
+        title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
       - name: Checkout community-operators-prod repo
         uses: actions/checkout@v5
         with:
-         repository: redhat-openshift-ecosystem/community-operators-prod
+         repository: pminz/community-operators-prod
          path: community-operators-prod
          ref: main
 
@@ -129,16 +129,16 @@ jobs:
         id: cpr1
         uses: peter-evans/create-pull-request@v7
         with: 
-         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
-         path: community-operators-prod
-         commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         committer: infinispan-qe-bot <q*@infinispan.org>
-         author: infinispan-qe-bot <q*@infinispan.org>
-         branch: pr_request
-         delete-branch: true
-         push-to-fork: infinispan-qe-bot/community-operators-prod
-         title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        token: ${{ secrets.PAT}}
+        path: community-operators-prod
+        commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        committer: pminz <pminz@redhat.com>
+        author: pminz <pminz@redhat.com>
+        branch: pr_request
+        delete-branch: true
+        push-to-fork: pminz/community-operators-prod
+        title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+        body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
 
       - name: Trigger Post Release job
         env:
@@ -146,7 +146,7 @@ jobs:
            REL_VERSION: ${{ steps.bump_tag.outputs.new_tag }}
         uses: cardinalby/schedule-job-action@v1
         with:
-         ghTokentoken: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+         ghTokentoken: ${{ secrets.PAT }}
          targetBranch: 'main'
          templateYmlFile: './infinispan-operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
