@@ -57,7 +57,7 @@ jobs:
           if [[ -z "${{ inputs.version }}" ]]; then
             IMAGE=${{ inputs.image }}
             TAG=${IMAGE#*:}
-            echo VERSION=${TAG%.Final*} >> ${GITHUB_ENV}
+            echo VERSION=${TAG%.dev*} >> ${GITHUB_ENV}
           else
             echo VERSION=${{ inputs.version }} >> ${GITHUB_ENV}
           fi
