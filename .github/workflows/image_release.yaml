@@ -142,11 +142,16 @@ jobs:
       #    title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
       #    body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
 
+      - name: Set environment variables for schedule-job-action
+        run: |
+          echo "REF=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_ENV
+
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
-        env:
-           REF: "${{ github.ref_name }}"
-           REL_VERSION: ${{ steps.bump_tag.outputs.new_tag }}
+        #env:
+        #   REF: "${{ github.ref_name }}"
+        #   REL_VERSION: ${{ github.ref_name }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
