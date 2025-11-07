@@ -143,13 +143,13 @@ jobs:
       #    body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
 
       - name: Trigger Post Release job
+        uses: cardinalby/schedule-job-action@v1
         env:
            REF: "${{ github.ref_name }}"
            REL_VERSION: ${{ steps.bump_tag.outputs.new_tag }}
-        uses: cardinalby/schedule-job-action@v1
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
-         templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
+         templateYmlFile: './infinispan-operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
          copyEnvVariables: 'REF,REL_VERSION'
