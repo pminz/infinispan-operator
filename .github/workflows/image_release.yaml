@@ -95,20 +95,20 @@ jobs:
          git add operators/infinispan/${{ steps.bump_tag.outputs.new_tag }}
          git commit -s -m "Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}"
  
-      - name: Create Pull Request to community-operators repo from forked repository 
-        id: cpr
-        uses: peter-evans/create-pull-request@v7
-        with: 
-          token: ${{ secrets.PAT }}
-          path: community-operators
-          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-          committer: pminz <pminz@redhat.com>
-          author: pminz <pminz@redhat.com>
-          branch: pr_request
-          delete-branch: false
-          push-to-fork: infinispan-qe-bot/community-operators
-          title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-          body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #- name: Create Pull Request to community-operators repo from forked repository 
+      #  id: cpr
+      #  uses: peter-evans/create-pull-request@v7
+      #  with: 
+      #    token: ${{ secrets.PAT }}
+      #    path: community-operators
+      #    commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #    committer: pminz <pminz@redhat.com>
+      #    author: pminz <pminz@redhat.com>
+      #    branch: pr_request
+      #    delete-branch: false
+      #    push-to-fork: infinispan-qe-bot/community-operators
+      #    title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #    body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
       - name: Checkout community-operators-prod repo
         uses: actions/checkout@v5
@@ -125,20 +125,20 @@ jobs:
          git add operators/infinispan/${{ steps.bump_tag.outputs.new_tag }}
          git commit -s -m "Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}"
  
-      - name: Create Pull Request
-        id: cpr1
-        uses: peter-evans/create-pull-request@v7
-        with: 
-          token: ${{ secrets.PAT}}
-          path: community-operators-prod
-          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-          committer: pminz <pminz@redhat.com>
-          author: pminz <pminz@redhat.com>
-          branch: pr_request
-          delete-branch: false
-          push-to-fork: pminz/community-operators-prod
-          title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-          body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #- name: Create Pull Request
+      #  id: cpr1
+      #  uses: peter-evans/create-pull-request@v7
+      #  with: 
+      #    token: ${{ secrets.PAT}}
+      #    path: community-operators-prod
+      #    commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #    committer: pminz <pminz@redhat.com>
+      #    author: pminz <pminz@redhat.com>
+      #    branch: pr_request
+      #    delete-branch: false
+      #    push-to-fork: pminz/community-operators-prod
+      #    title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+      #    body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
 
       - name: Trigger Post Release job
         env:
