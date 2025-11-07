@@ -150,6 +150,6 @@ jobs:
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
-         templateYmlFile: './infinispan-operator/.github-scheduled-workflows/publish-main.yaml'
+         templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
          copyEnvVariables: 'REF,REL_VERSION'
