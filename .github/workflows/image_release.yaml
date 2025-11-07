@@ -37,6 +37,8 @@ jobs:
         working-directory: operator
         id: bump_tag
         run: |
+          pwd
+          tree
           ./scripts/ci/bump_version.sh
 
       #- name: Tag the release
