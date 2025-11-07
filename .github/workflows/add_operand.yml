@@ -65,8 +65,8 @@ jobs:
       - name: Add Operand
         run: ./scripts/ci/add_operand.sh
         env:
-          IMAGE: ${{ inputs.image }}
-          VERSION: ${{ env.VERSION }}
+          IMAGE: ${{ toJSON(inputs.image) }}
+          VERSION: ${{ toJSON(env.VERSION) }}
 
       - name: Commit changes and push to repository
         run: |
