@@ -57,7 +57,7 @@ jobs:
           if [[ -z "${{ inputs.version }}" ]]; then
             IMAGE=${{ inputs.image }}
             TAG=${IMAGE#*:}
-            echo VERSION=${TAG%.dev*} >> ${GITHUB_ENV}
+            echo VERSION=${TAG%.Final*} >> ${GITHUB_ENV}
           else
             echo VERSION=${{ inputs.version }} >> ${GITHUB_ENV}
           fi
@@ -65,8 +65,8 @@ jobs:
       - name: Add Operand
         run: ./scripts/ci/add_operand.sh
         env:
-          IMAGE: ${{ toJSON(inputs.image) }}
-          VERSION: ${{ toJSON(env.VERSION) }}
+          IMAGE: ${{ inputs.image }}
+          VERSION: ${{ env.VERSION }}
 
       - name: Commit changes and push to repository
         run: |
