@@ -143,29 +143,30 @@ jobs:
       #    body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
 
       - name: Set environment variables for schedule-job-action
+        id: set-vars
         run: |
-          echo "REF=${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_ENV
+          echo "REF=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
 
-      - name: Export REF and REL_VERSION
-        run: |
-          # Export variables at OS level so the action can see them
-          export REF=${{ github.ref_name }}
-          export REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}
-
-          # Debug output to confirm
-          echo "REF=$REF"
-          echo "REL_VERSION=$REL_VERSION"
-
-          # Persist to GITHUB_ENV so later steps can also use them
-          echo "REF=$REF" >> $GITHUB_ENV
-          echo "REL_VERSION=$REL_VERSION" >> $GITHUB_ENV
+      #- name: Export REF and REL_VERSION
+      #  run: |
+      #    # Export variables at OS level so the action can see them
+      #    export REF=${{ github.ref_name }}
+      #    export REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}
+#
+      #    # Debug output to confirm
+      #    echo "REF=$REF"
+      #    echo "REL_VERSION=$REL_VERSION"
+#
+      #    # Persist to GITHUB_ENV so later steps can also use them
+      #    echo "REF=$REF" >> $GITHUB_ENV
+      #    echo "REL_VERSION=$REL_VERSION" >> $GITHUB_ENV
 
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
-        #env:
-        #  REF: ${{ env.REF }}
-        #  REL_VERSION: ${{ env.REL_VERSION }}
+        env:
+          REF: ${{ steps.set-vars.outputs.REF }}
+          REL_VERSION: ${{ steps.set-vars.outputs.REL_VERSION }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
