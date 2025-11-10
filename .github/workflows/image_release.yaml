@@ -172,4 +172,6 @@ jobs:
          targetBranch: 'test_e2e'
          templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
-         copyEnvVariables: 'REF,REL_VERSION'
+         envMapping: |
+           REF=${{ env.REF }}
+           REL_VERSION=${{ env.REL_VERSION }}
