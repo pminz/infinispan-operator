@@ -30,7 +30,7 @@ jobs:
           docker manifest inspect quay.io/pminz/infinispan-operator:v${{
           steps.set_version.outputs.new_tag }}
       - name: Update the version file to next version
-        if: ${{ success() }}
+        if: '${{ success()'
         env:
           NEXT_VERSION: '${{ steps.bump_tag.outputs.next_version }}'
           PREV_VERSION: '${{ steps.bump_tag.outputs.prev_ver }}'
@@ -65,7 +65,7 @@ jobs:
           ghToken: '${{ secrets.PAT }}'
           deleteRefTag: false
     env:
-      DELAYED_JOB_CHECKOUT_REF: f3dc7bf78d861950c62fe81dc4c9753b5451b265
+      DELAYED_JOB_CHECKOUT_REF: 39ff7a926001f66a44e681ecb7167ca1c29c418e
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
       DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
       DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: test_e2e
