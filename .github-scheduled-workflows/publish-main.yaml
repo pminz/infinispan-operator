@@ -1,4 +1,4 @@
-name: Publish to main
+name: Post release Job
 'on':
   schedule:
     - cron: '*/30 * * * *'
