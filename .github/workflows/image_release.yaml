@@ -150,8 +150,8 @@ jobs:
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
         env:
-          REF: ${{ env.REF }}
-          REL_VERSION: ${{ env.REL_VERSION }}
+          REF: ${{ github.ref_name }}
+          REL_VERSION: ${{ steps.bump_tag.outputs.new_tag }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
