@@ -147,11 +147,25 @@ jobs:
           echo "REF=${{ github.ref_name }}" >> $GITHUB_ENV
           echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_ENV
 
+      - name: Export REF and REL_VERSION
+        run: |
+          # Export variables at OS level so the action can see them
+          export REF=${{ github.ref_name }}
+          export REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}
+
+          # Debug output to confirm
+          echo "REF=$REF"
+          echo "REL_VERSION=$REL_VERSION"
+
+          # Persist to GITHUB_ENV so later steps can also use them
+          echo "REF=$REF" >> $GITHUB_ENV
+          echo "REL_VERSION=$REL_VERSION" >> $GITHUB_ENV
+
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
         env:
-          REF: ${{ github.ref_name }}
-          REL_VERSION: ${{ steps.bump_tag.outputs.new_tag }}
+          REF: ${{ env.REF }}
+          REL_VERSION: ${{ env.REL_VERSION }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
