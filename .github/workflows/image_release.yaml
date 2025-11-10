@@ -163,9 +163,9 @@ jobs:
 
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
-        env:
-          REF: ${{ env.REF }}
-          REL_VERSION: ${{ env.REL_VERSION }}
+        #env:
+        #  REF: ${{ env.REF }}
+        #  REL_VERSION: ${{ env.REL_VERSION }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
