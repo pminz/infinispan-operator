@@ -1,5 +1,5 @@
 name: Post release Job
-on:
+'on':
   schedule:
     - cron: '*/30 * * * *'
 jobs:
@@ -65,7 +65,7 @@ jobs:
           ghToken: '${{ secrets.PAT }}'
           deleteRefTag: false
     env:
-      DELAYED_JOB_CHECKOUT_REF: eedd2fc46e4e7b63e092bad101b59d40dec996ff
+      DELAYED_JOB_CHECKOUT_REF: 00984d1bcaa12c27369f30b0ccf9a289b6973007
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
       DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
       DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: test_e2e
