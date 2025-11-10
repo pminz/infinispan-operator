@@ -65,7 +65,7 @@ jobs:
           ghToken: '${{ secrets.PAT }}'
           deleteRefTag: false
     env:
-      DELAYED_JOB_CHECKOUT_REF: 4cea4c214c4a289c258676b205b5bb31041a65b1
+      DELAYED_JOB_CHECKOUT_REF: b938da18717b326045b95e4c6fccfe57772d0a2b
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
       DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
       DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: test_e2e
