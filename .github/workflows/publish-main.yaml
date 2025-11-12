@@ -16,6 +16,10 @@ jobs:
           path: operator
           ref: '${{ env.REF }}'
           token: '${{ secrets.PAT }}'
+      - name: Check path for scripts
+        run: |
+          pwd
+          tree
       - name: Set parameters
         id: params
         run: |
