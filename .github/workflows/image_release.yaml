@@ -145,8 +145,8 @@ jobs:
       - name: Set environment variables for schedule-job-action
         id: set-vars
         run: |
-          echo "REF=${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_ENV
+          echo "REF=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
 
       #- name: Export REF and REL_VERSION
       #  run: |
