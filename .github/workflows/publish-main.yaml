@@ -30,7 +30,7 @@ jobs:
           docker manifest inspect quay.io/pminz/infinispan-operator:v${{
           steps.set_version.outputs.new_tag }}
       - name: Update the version file to next version
-        if: '${{ success()'
+        if: success()
         env:
           NEXT_VERSION: '${{ steps.bump_tag.outputs.next_version }}'
           PREV_VERSION: '${{ steps.bump_tag.outputs.prev_ver }}'
