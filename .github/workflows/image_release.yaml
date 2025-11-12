@@ -44,7 +44,7 @@ jobs:
           TAG_NAME: ${{ steps.bump_tag.outputs.new_tag }}
         run: |
           git tag -a "$TAG_NAME" -m "Release Operator:: $TAG_NAME"
-          git push origin "$TAG_NAME
+          git push origin "$TAG_NAME"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
