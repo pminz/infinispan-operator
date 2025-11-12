@@ -138,6 +138,12 @@ jobs:
       #   push-to-fork: infinispan-qe-bot/community-operators-prod
       #   title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
       #   body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+
+      - name: Set environment variables for schedule-job-action
+        id: set-vars
+        run: |
+          echo "REF=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
 #
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
