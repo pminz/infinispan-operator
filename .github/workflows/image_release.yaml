@@ -178,7 +178,7 @@ jobs:
         run: |
           export REF="${{ steps.set-vars.outputs.REF }}"
           export REL_VERSION="${{ steps.set-vars.outputs.REL_VERSION }}"
-          npx --yes cardinalby/schedule-job-action@v1 \
+          npx --yes --package cardinalby/schedule-job-action@v1 \
             --ghToken "${{ secrets.PAT }}" \
             --targetBranch test_e2e \
             --templateYmlFile ./operator/.github-scheduled-workflows/publish-main.yaml \
