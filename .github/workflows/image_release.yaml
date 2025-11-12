@@ -162,14 +162,27 @@ jobs:
       #    echo "REF=$REF" >> $GITHUB_ENV
       #    echo "REL_VERSION=$REL_VERSION" >> $GITHUB_ENV
 
+      #- name: Trigger Post Release job
+      #  uses: cardinalby/schedule-job-action@v1
+      #  env:
+      #   REF: ${{ steps.set-vars.outputs.REF }}
+      #   REL_VERSION: ${{ steps.set-vars.outputs.REL_VERSION }}
+      #  with:
+      #   ghToken: ${{ secrets.PAT }}
+      #   targetBranch: 'test_e2e'
+      #   templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
+      #   targetYmlFileName: publish-main.yaml
+      #   copyEnvVariables: REF,REL_VERSION
+#
       - name: Trigger Post Release job
-        uses: cardinalby/schedule-job-action@v1
-        env:
-         REF: ${{ steps.set-vars.outputs.REF }}
-         REL_VERSION: ${{ steps.set-vars.outputs.REL_VERSION }}
-        with:
-         ghToken: ${{ secrets.PAT }}
-         targetBranch: 'test_e2e'
-         templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
-         targetYmlFileName: publish-main.yaml
-         copyEnvVariables: REF,REL_VERSION
+        run: |
+          export REF="${{ steps.set-vars.outputs.REF }}"
+          export REL_VERSION="${{ steps.set-vars.outputs.REL_VERSION }}"
+          npx -y cardinalby/schedule-job-action@v1 \
+            --ghToken "${{ secrets.PAT }}" \
+            --targetBranch test_e2e \
+            --templateYmlFile ./operator/.github-scheduled-workflows/publish-main.yaml \
+            --targetYmlFileName publish-main.yaml \
+            --copyEnvVariables REF,REL_VERSION \
+            --overrideTargetFile true \
+            --pushForce true
