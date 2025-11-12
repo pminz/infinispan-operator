@@ -20,6 +20,7 @@ jobs:
         run: |
           pwd
           tree
+          ls -lrth
       - name: Set parameters
         id: params
         run: |
