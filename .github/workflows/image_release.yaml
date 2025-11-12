@@ -172,4 +172,4 @@ jobs:
          targetBranch: ${{ steps.set-vars.outputs.REF }}
          templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
-         copyEnvVariables: REF,REL_VERSION
+         copyEnvVariables: REF REL_VERSION
