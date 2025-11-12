@@ -145,8 +145,8 @@ jobs:
       - name: Set environment variables for schedule-job-action
         id: set-vars
         run: |
-          echo "REF=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
+          echo "REF=${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "REL_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_ENV
 
       #- name: Export REF and REL_VERSION
       #  run: |
@@ -164,14 +164,12 @@ jobs:
 
       - name: Trigger Post Release job
         uses: cardinalby/schedule-job-action@v1
-        env:
-          REF: ${{ steps.set-vars.outputs.REF }}
-          REL_VERSION: ${{ steps.set-vars.outputs.REL_VERSION }}
+        #env:
+        #  REF: ${{ steps.set-vars.outputs.REF }}
+        #  REL_VERSION: ${{ steps.set-vars.outputs.REL_VERSION }}
         with:
          ghToken: ${{ secrets.PAT }}
          targetBranch: 'test_e2e'
          templateYmlFile: './operator/.github-scheduled-workflows/publish-main.yaml'
          targetYmlFileName: publish-main.yaml
-         envMapping: |
-           REF=${{ env.REF }}
-           REL_VERSION=${{ env.REL_VERSION }}
+         copyEnvVariables: REF,REL_VERSION
