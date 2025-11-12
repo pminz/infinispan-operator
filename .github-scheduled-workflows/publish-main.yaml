@@ -9,15 +9,15 @@ jobs:
     steps:
       - name: Configure Git
         run: |
-          git config --global user.name "infinispan-qe-bot"
-          git config --global user.email "q*@infinispan.org"
+          git config --global user.name "pminz"
+          git config --global user.email "pminz@redhat.com"
 
       - name: Checkout
         uses: actions/checkout@v5
         with:
           path: operator
           ref: ${{ env.REF }}
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          token: ${{ secrets.PAT }}
 
       - name: Set parameters
         id: params
@@ -31,7 +31,7 @@ jobs:
 
       - name: Check if the image exists
         id: check_image
-        run: docker manifest inspect quay.io/operatorhubio/infinispan:v${{ steps.set_version.outputs.new_tag }}
+        run: docker manifest inspect quay.io/pminz/infinispan-operator:v${{ steps.set_version.outputs.new_tag }}
 
       - name: Update the version file to next version
         if: ${{ success() 
@@ -53,5 +53,5 @@ jobs:
         uses: cardinalby/unschedule-job-action@v1
         if: success()
         with:
-          ghToken: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          ghToken: ${{ secrets.PAT }}
           deleteRefTag: false
