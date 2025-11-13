@@ -28,7 +28,8 @@ jobs:
           echo "REL_VERSION=${{ env.REL_VERSION }}" >> $GITHUB_ENV
       - name: Set Next Version
         id: set_version
-        run: ./operator/scripts/ci/bump_version.sh
+        working-directory: operator
+        run: ./scripts/ci/bump_version.sh
       - name: Check if the image exists
         id: check_image
         run: >-
