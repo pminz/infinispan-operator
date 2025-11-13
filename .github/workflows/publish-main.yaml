@@ -1,5 +1,5 @@
-name: Post Release job
-on:
+name: Post release Job
+'on':
   schedule:
     - cron: '*/15 * * * *'
 jobs:
@@ -16,11 +16,6 @@ jobs:
           path: operator
           ref: '${{ env.REF }}'
           token: '${{ secrets.PAT }}'
-      - name: Check path for scripts
-        run: |
-          pwd
-          tree
-          ls -lrth
       - name: Set parameters
         id: params
         run: |
@@ -28,7 +23,6 @@ jobs:
           echo "REL_VERSION=${{ env.REL_VERSION }}" >> $GITHUB_ENV
       - name: Set Next Version
         id: set_version
-        working-directory: operator
         run: ./scripts/ci/bump_version.sh
       - name: Check if the image exists
         id: check_image
@@ -71,9 +65,9 @@ jobs:
           ghToken: '${{ secrets.PAT }}'
           deleteRefTag: false
     env:
-      DELAYED_JOB_CHECKOUT_REF: dcb9ce44092691b8dd0f19653626c6a30dfd4425
+      DELAYED_JOB_CHECKOUT_REF: 927cfa2031a9ed785d8248f5572efcd89d232fb7
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
       DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
       DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: automation_test
       REF: automation_test
-      REL_VERSION: 1.2.16
+      REL_VERSION: 1.2.17
