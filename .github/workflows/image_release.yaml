@@ -101,11 +101,11 @@ jobs:
          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
          path: community-operators
          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         committer: infinispan-qe-bot <q*@infinispan.org>
-         author: infinispan-qe-bot <q*@infinispan.org>
+         committer: pminz <pminz@redhat.com>
+         author: pminz <pminz@redhat.com>
          branch: pr_request
-         delete-branch: true
-         push-to-fork: infinispan-qe-bot/community-operators
+         #delete-branch: true
+         #push-to-fork: infinispan-qe-bot/community-operators
          title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
          body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
@@ -131,11 +131,11 @@ jobs:
          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
          path: community-operators-prod
          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-         committer: infinispan-qe-bot <q*@infinispan.org>
-         author: infinispan-qe-bot <q*@infinispan.org>
+         committer: pminz <pminz@redhat.com>
+         author: pminz <pminz@redhat.com>
          branch: pr_request
-         delete-branch: true
-         push-to-fork: infinispan-qe-bot/community-operators-prod
+         #delete-branch: true
+         #push-to-fork: infinispan-qe-bot/community-operators-prod
          title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
          body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
