@@ -28,7 +28,7 @@ jobs:
       - name: Check if the image exists
         id: check_image
         run: >-
-          docker manifest inspect quay.io/pminz/infinispan-operator:v${{ env.REL_VERSION }}
+          docker manifest inspect quay.io/pminz/infinispan-operator:${{ env.REL_VERSION }}
       - name: Update the version file to next version
         if: success()
         env:
