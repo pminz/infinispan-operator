@@ -43,7 +43,7 @@ jobs:
           scripts/ci/install-catalog-source.sh
 
           sed -i -E "s/^[[:space:]]*(for version in [^;]*)(;[[:space:]]*do)/\1
-          $NEXT_VERSION\2/" scripts/create-olm-catalog.sh
+          $PREV_VERSION\2/" scripts/create-olm-catalog.sh
 
           ./scripts/ci/add_next_version.sh  scripts/test-catalog.yml
           infinispan-operator.v$NEXT_VERSION infinispan-operator.v$PREV_VERSION
@@ -55,7 +55,7 @@ jobs:
           git add .
 
           git commit -m "Next Version ${{
-          steps.next_version.outputs.next_version }}"
+          steps.next_version.outputs.new_tag }}"
 
           git push origin "${{ steps.params.outputs.ref }}"
       - name: Remove scheduled job
