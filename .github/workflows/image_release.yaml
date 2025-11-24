@@ -98,7 +98,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with: 
-         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+         token: ${{ secrets.PAT }}
          path: community-operators
          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
          committer: pminz <pminz@redhat.com>
@@ -128,7 +128,7 @@ jobs:
         id: cpr1
         uses: peter-evans/create-pull-request@v7
         with: 
-         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+         token: ${{ secrets.PAT }}
          path: community-operators-prod
          commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
          committer: pminz <pminz@redhat.com>
