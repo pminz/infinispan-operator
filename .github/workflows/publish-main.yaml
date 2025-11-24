@@ -28,12 +28,11 @@ jobs:
       - name: Check if the image exists
         id: check_image
         run: >-
-          docker manifest inspect quay.io/pminz/infinispan-operator:v${{
-          steps.set_version.outputs.new_tag }}
+          docker manifest inspect quay.io/pminz/infinispan-operator:v${{ env.REL_VERSION }}
       - name: Update the version file to next version
         if: success()
         env:
-          NEXT_VERSION: '${{ steps.bump_tag.outputs.next_version }}'
+          NEXT_VERSION: '${{ steps.bump_tag.outputs.new_tag }}'
           PREV_VERSION: '${{ steps.bump_tag.outputs.prev_ver }}'
         run: >
           cd operator
