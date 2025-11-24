@@ -82,9 +82,9 @@ jobs:
       - name: Checkout community-operators repo
         uses: actions/checkout@v5
         with:
-        repository: pminz/community-operators
-        path: community-operators
-        ref: main
+         repository: pminz/community-operators
+         path: community-operators
+         ref: automation_test
 
       - name: Copy contents of bundle/ 
         working-directory: community-operators
@@ -98,23 +98,23 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with: 
-        token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
-        path: community-operators
-        commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-        committer: infinispan-qe-bot <q*@infinispan.org>
-        author: infinispan-qe-bot <q*@infinispan.org>
-        branch: pr_request
-        delete-branch: true
-        push-to-fork: infinispan-qe-bot/community-operators
-        title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-        body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+         path: community-operators
+         commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         committer: infinispan-qe-bot <q*@infinispan.org>
+         author: infinispan-qe-bot <q*@infinispan.org>
+         branch: pr_request
+         delete-branch: true
+         push-to-fork: infinispan-qe-bot/community-operators
+         title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
       - name: Checkout community-operators-prod repo
         uses: actions/checkout@v5
         with:
-        repository: pminz/community-operators-prod
-        path: community-operators-prod
-        ref: main
+         repository: pminz/community-operators-prod
+         path: community-operators-prod
+         ref: automation_test
 
       - name: Copy contents of bundle/ and issue PRs
         working-directory: community-operators-prod
@@ -128,16 +128,16 @@ jobs:
         id: cpr1
         uses: peter-evans/create-pull-request@v7
         with: 
-        token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
-        path: community-operators-prod
-        commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-        committer: infinispan-qe-bot <q*@infinispan.org>
-        author: infinispan-qe-bot <q*@infinispan.org>
-        branch: pr_request
-        delete-branch: true
-        push-to-fork: infinispan-qe-bot/community-operators-prod
-        title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
-        body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+         path: community-operators-prod
+         commit-message: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         committer: infinispan-qe-bot <q*@infinispan.org>
+         author: infinispan-qe-bot <q*@infinispan.org>
+         branch: pr_request
+         delete-branch: true
+         push-to-fork: infinispan-qe-bot/community-operators-prod
+         title: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
+         body: 'Operator Infinispan ${{ steps.bump_tag.outputs.new_tag }}'
  
       - name: Set environment variables for schedule-job-action
         id: set-vars
