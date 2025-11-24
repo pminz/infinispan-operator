@@ -27,8 +27,9 @@ jobs:
         run: ./scripts/ci/bump_version.sh
       - name: Check if the image exists
         id: check_image
-        run: >-
-          docker manifest inspect quay.io/pminz/infinispan-operator:${{ env.REL_VERSION }} --insecure
+        #run: >-
+          #docker manifest inspect quay.io/pminz/infinispan-operator:${{ env.REL_VERSION }} --insecure
+        run: docker manifest inspect quay.io/operatorhubio/infinispan:v2.5.0
       - name: Update the version file to next version
         if: success()
         env:
