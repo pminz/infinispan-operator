@@ -49,7 +49,7 @@ jobs:
           infinispan-operator.v$NEXT_VERSION infinispan-operator.v$PREV_VERSION
 
           sed -i -E "s/^( *replaces:
-          +infinispan-operator\.v)[0-9]+\.[0-9]+\.[0-9]+/\1$NEXT_VERSION/"
+          +infinispan-operator\.v)[0-9]+\.[0-9]+\.[0-9]+/\1$PREV_VERSION/"
           config/manifests/bases/infinispan-operator.clusterserviceversion.yaml
 
           git add .
