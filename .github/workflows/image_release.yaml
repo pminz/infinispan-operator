@@ -84,7 +84,7 @@ jobs:
         with:
          repository: pminz/community-operators
          path: community-operators
-         ref: automation_test
+         ref: main
 
       - name: Copy contents of bundle/ 
         working-directory: community-operators
@@ -114,7 +114,7 @@ jobs:
         with:
          repository: pminz/community-operators-prod
          path: community-operators-prod
-         ref: automation_test
+         ref: main
 
       - name: Copy contents of bundle/ and issue PRs
         working-directory: community-operators-prod
