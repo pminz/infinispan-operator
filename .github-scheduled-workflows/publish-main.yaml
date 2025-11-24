@@ -27,6 +27,7 @@ jobs:
 
       - name: Set Next Version
         id: set_version
+        working-directory: operator
         run : ./scripts/ci/bump_version.sh
 
       - name: Check if the image exists
