@@ -1,7 +1,7 @@
 name: Post release Job
 'on':
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/10 * * * *'
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -65,9 +65,9 @@ jobs:
           ghToken: '${{ secrets.PAT }}'
           deleteRefTag: false
     env:
-      DELAYED_JOB_CHECKOUT_REF: 927cfa2031a9ed785d8248f5572efcd89d232fb7
+      DELAYED_JOB_CHECKOUT_REF: f47cab527646bc5badaf1651a38f029f1ad97489
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
       DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
       DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: automation_test
       REF: automation_test
-      REL_VERSION: 1.2.17
+      REL_VERSION: 1.3.1
