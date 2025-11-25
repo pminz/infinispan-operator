@@ -31,17 +31,17 @@ jobs:
           #docker manifest inspect quay.io/pminz/infinispan-operator:${{ env.REL_VERSION }} --insecure
         run: docker manifest inspect quay.io/operatorhubio/infinispan:v2.5.0
 
-      - name: Set environment variables for schedule-job-action
-        id: set-vars
-        run: |
-          echo "NEXT_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
-          echo "PREV_VERSION=${{ steps.bump_tag.outputs.prev_ver }}" >> $GITHUB_OUTPUT
+      #- name: Set environment variables for schedule-job-action
+      #  id: set-vars
+      #  run: |
+      #    echo "NEXT_VERSION=${{ steps.bump_tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
+      #    echo "PREV_VERSION=${{ steps.bump_tag.outputs.prev_ver }}" >> $GITHUB_OUTPUT
 
       - name: Update the version file to next version
         if: success()
         env:
-          NEXT_VERSION: ${{ steps.set-vars.outputs.NEXT_VERSION }}
-          PREV_VERSION: ${{ steps.set-vars.outputs.PREV_VERSION }}
+          NEXT_VERSION: ${{ steps.set_version.outputs.new_tag }}
+          PREV_VERSION: ${{ steps.set_version.outputs.prev_ver }}
         working-directory: operator
         run: >
           echo $NEXT_VERSION
