@@ -22,8 +22,8 @@ jobs:
       - name: Set parameters
         id: params
         run: |
-          echo "REF=${{ env.REF }}" >> $GITHUB_ENV
-          echo "REL_VERSION=${{ env.REL_VERSION }}" >> $GITHUB_ENV
+          echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
+          echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Set Next Version
         id: set_version
