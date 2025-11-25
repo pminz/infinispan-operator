@@ -43,9 +43,12 @@ jobs:
 
       - name: Update the version file to next version
         if: success()
+        #env:
+        #  NEXT_VERSION: ${{ steps.set_version.outputs.new_tag }}
+        #  PREV_VERSION: ${{ steps.set_version.outputs.prev_ver }}
         env:
-          NEXT_VERSION: ${{ steps.set_version.outputs.new_tag }}
-          PREV_VERSION: ${{ steps.set_version.outputs.prev_ver }}
+          NEXT_VERSION: 2.5.1
+          PREV_VERSION: 2.5.0
         working-directory: operator
         run: >
             echo $NEXT_VERSION
@@ -56,7 +59,7 @@ jobs:
             ./scripts/ci/add_next_version.sh  scripts/test-catalog.yml infinispan-operator.v$NEXT_VERSION infinispan-operator.v$PREV_VERSION
             sed -i -E "s/^( *replaces: +infinispan-operator\.v)[0-9]+\.[0-9]+\.[0-9]+/\1$PREV_VERSION/" config/manifests/bases/infinispan-operator.clusterserviceversion.yaml
             git add .
-            git commit -m "Next Version ${{ steps.next_version.outputs.new_tag }}"
+            git commit -m "Next Version ${{ steps.set_version.outputs.new_tag }}"
             git push origin "${{ steps.params.outputs.ref }}"
 
       - name: Remove scheduled job 

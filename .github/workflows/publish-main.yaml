@@ -39,9 +39,12 @@ jobs:
 
       - name: Update the version file to next version
         if: success()
+        #env:
+        #  NEXT_VERSION: ${{ steps.set_version.outputs.new_tag }}
+        #  PREV_VERSION: ${{ steps.set_version.outputs.prev_ver }}
         env:
-          NEXT_VERSION: ${{ steps.set_version.outputs.new_tag }}
-          PREV_VERSION: ${{ steps.set_version.outputs.prev_ver }}
+          NEXT_VERSION: 2.5.1
+          PREV_VERSION: 2.5.0
         working-directory: operator
         run: >
           echo $NEXT_VERSION
@@ -65,7 +68,7 @@ jobs:
           git add .
 
           git commit -m "Next Version ${{
-          steps.next_version.outputs.new_tag }}"
+          steps.set_version.outputs.new_tag }}"
 
           git push origin "${{ steps.params.outputs.ref }}"
       - name: Remove scheduled job
