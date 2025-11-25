@@ -42,8 +42,8 @@ jobs:
         env:
           NEXT_VERSION: ${{ steps.set-vars.outputs.NEXT_VERSION }}
           PREV_VERSION: ${{ steps.set-vars.outputs.PREV_VERSION }}
+        working-directory: operator
         run: >
-          cd operator
           echo $NEXT_VERSION
           echo $PREV_VERSION
 
