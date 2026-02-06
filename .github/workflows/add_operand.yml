@@ -53,12 +53,12 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           repository: ${{ inputs.repository }}
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          token: ${{ secrets.PAT}}
 
-      - name: Rebase onto latest
-        run: |
-          git fetch origin
-          git rebase origin/${{ github.ref_name }}
+      #- name: Rebase onto latest
+      #  run: |
+      #    git fetch origin
+      #    git rebase origin/${{ github.ref_name }}
 
       - name: Determine Upstream Version
         run: |
@@ -80,23 +80,23 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          labels: |
-            test/release
-            release
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          #labels: |
+          #  test/release
+          #  release
+          token: ${{ secrets.PAT}}
           commit-message: 'Add Operand ${{ env.VERSION }}'
-          committer: Infinispan <infinispan@infinispan.org>
-          author: Infinispan <infinispan@infinispan.org>
-          branch: operand-${{ env.VERSION }}
+          committer: pminz <pminz@redhat.com>
+          author: pminz <pminz@redhat.com>
+          branch: add-operands
           delete-branch: true
-          title: 'Add Operand ${{ env.VERSION }}'
+          title: 'Add Operands'
           body: 'Add Operand ${{ env.VERSION }}'
 
       - name: Enable auto merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
+          token: ${{ secrets.PAT}}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
           merge-method: rebase
           repository: ${{ inputs.repository || github.repository }}
