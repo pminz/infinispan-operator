@@ -80,9 +80,10 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          #labels: |
-          #  test/release
-          #  release
+          labels: |
+            test/release
+            release
+            ${{ env.RELEASE_GROUP }}
           token: ${{ secrets.PAT}}
           commit-message: 'Add Operand ${{ env.VERSION }}'
           committer: pminz <pminz@redhat.com>
