@@ -27,6 +27,13 @@ jobs:
           git config --global user.name "pminz"
           git config --global user.email "pminz@redhat.com"
 
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref || github.event.inputs.ref }}
+          repository: ${{ github.repository }}
+          token: ${{ secrets.PAT }}
+
       - name: Authenticate gh
         env:
           GH_TOKEN: ${{ secrets.PAT }}
