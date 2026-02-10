@@ -27,8 +27,10 @@ jobs:
           git config --global user.name "pminz"
           git config --global user.email "pminz@redhat.com"
 
-      - name: Set up gh CLI
-        uses: actions/setup-gh@v2
+      - name: Authenticate gh
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: gh auth status
 
       - name: Extract release group label
         run: |
