@@ -14,7 +14,7 @@ on:
 
   pull_request:
      types: [closed]
-     branches: [main]
+     branches: [test_concurrency]
 
 jobs:
   release:
@@ -26,6 +26,9 @@ jobs:
         run: |
           git config --global user.name "pminz"
           git config --global user.email "pminz@redhat.com"
+
+      - name: Set up gh CLI
+        uses: actions/setup-gh@v2
 
       - name: Extract release group label
         run: |

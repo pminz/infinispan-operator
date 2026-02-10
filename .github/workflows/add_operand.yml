@@ -76,6 +76,9 @@ jobs:
           IMAGE: ${{ inputs.image }}
           VERSION: ${{ env.VERSION }}
 
+      - name: Set up environment
+        run: echo "RELEASE_GROUP=release-group-${GITHUB_RUN_ID}" >> $GITHUB_ENV
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8
