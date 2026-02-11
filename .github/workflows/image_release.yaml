@@ -1,20 +1,24 @@
 name: Image Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: "The Operator branch/tag to checkout when creating the image."
-        required: true
-        default: "main"
-      repository:
-        description: "The git repository to checkout"
-        required: false
-        type: string
+ #workflow_dispatch:
+ #  inputs:
+ #    ref:
+ #      description: "The Operator branch/tag to checkout when creating the image."
+ #      required: true
+ #      default: "main"
+ #    repository:
+ #      description: "The git repository to checkout"
+ #      required: false
+ #      type: string
+#
+ #pull_request:
+ #   types: [closed]
+ #   branches: [test_concurrency]
 
-  pull_request:
-     types: [closed]
-     branches: [test_concurrency]
+
+ schedule:
+    - cron: '* * * * *'
 
 jobs:
   release:
@@ -34,44 +38,58 @@ jobs:
           repository: ${{ github.repository }}
           token: ${{ secrets.PAT }}
 
-      - name: Authenticate gh
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: gh auth status
-
-      - name: Extract release group label
+      - name: Check if operand changed
+        id: check
         run: |
-          GROUP_LABEL=$(jq -r '
-            .pull_request.labels[]
-            | select(.name | startswith("release-group-"))
-            | .name
-          ' "$GITHUB_EVENT_PATH")
-
-          if [ -z "$GROUP_LABEL" ]; then
-            echo "No release group label found, exiting."
-            exit 0
+          if git diff --quiet HEAD~1 HEAD -- config/manager/manager.yaml; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
+      
+      - name: Release
+        if: steps.check.outputs.changed == 'true'
+        run: echo "Release"
 
-          echo "GROUP_LABEL=$GROUP_LABEL" >> $GITHUB_ENV
+      #- name: Authenticate gh
+      #  env:
+      #    GH_TOKEN: ${{ secrets.PAT }}
+      #  run: gh auth status
 
-      - name: Check for other open release PRs in this group
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: |
-          OPEN=$(gh pr list \
-            --state open \
-            --label "$GROUP_LABEL" \
-            --label release \
-            --json number \
-            --jq 'length')
-
-          if [ "$OPEN" -gt 0 ]; then
-            echo "Other PRs still open in this release group. Skipping release."
-            exit 0
-          fi
-
-          echo "All PRs merged. Proceeding with release 🚀"
-
+      
+      #- name: Extract release group label
+      #  run: |
+      #    GROUP_LABEL=$(jq -r '
+      #      .pull_request.labels[]
+      #      | select(.name | startswith("release-group-"))
+      #      | .name
+      #    ' "$GITHUB_EVENT_PATH")
+#
+      #    if [ -z "$GROUP_LABEL" ]; then
+      #      echo "No release group label found, exiting."
+      #      exit 0
+      #    fi
+#
+      #    echo "GROUP_LABEL=$GROUP_LABEL" >> $GITHUB_ENV
+#
+      #- name: Check for other open release PRs in this group
+      #  env:
+      #    GH_TOKEN: ${{ secrets.PAT }}
+      #  run: |
+      #    OPEN=$(gh pr list \
+      #      --state open \
+      #      --label "$GROUP_LABEL" \
+      #      --label release \
+      #      --json number \
+      #      --jq 'length')
+#
+      #    if [ "$OPEN" -gt 0 ]; then
+      #      echo "Other PRs still open in this release group. Skipping release."
+      #      exit 0
+      #    fi
+#
+      #    echo "All PRs merged. Proceeding with release 🚀"
+#
 #      - name: Checkout
 #        uses: actions/checkout@v6
 #        with:
