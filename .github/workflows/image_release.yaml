@@ -1,6 +1,8 @@
 name: Image Release
 
 on:
+ schedule:
+    - cron: '* * * * *'
  #workflow_dispatch:
  #  inputs:
  #    ref:
@@ -16,9 +18,6 @@ on:
  #   types: [closed]
  #   branches: [test_concurrency]
 
-
- schedule:
-    - cron: '* * * * *'
 
 jobs:
   release:
