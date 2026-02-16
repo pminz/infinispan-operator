@@ -39,11 +39,11 @@ jobs:
       - name: Check if operand changed
         id: check
         run: |
-          if git diff --quiet HEAD~1 HEAD -- config/manager/manager.yaml; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+         if git diff --quiet ${{ github.event.before }} ${{ github.sha }} -- config/manager/manager.yaml; then
+           echo "changed=false" >> $GITHUB_OUTPUT
+         else
+           echo "changed=true" >> $GITHUB_OUTPUT
+         fi
       
       - name: Release
         if: steps.check.outputs.changed == 'true'
