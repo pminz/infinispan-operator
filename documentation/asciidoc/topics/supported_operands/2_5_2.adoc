@@ -46,3 +46,4 @@ To add additional Operands to this file, update the `INFINISPAN_OPERAND_VERSIONS
 16.0.5
 16.0.6
 16.1.0
+16.1.1
