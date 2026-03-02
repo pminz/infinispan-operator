@@ -3,17 +3,17 @@ name: Image Release
 on:
  schedule:
     - cron: '* * * * *'
- #workflow_dispatch:
- #  inputs:
- #    ref:
- #      description: "The Operator branch/tag to checkout when creating the image."
- #      required: true
- #      default: "main"
- #    repository:
- #      description: "The git repository to checkout"
- #      required: false
- #      type: string
-#
+ workflow_dispatch:
+  inputs:
+    ref:
+      description: "The Operator branch/tag to checkout when creating the image."
+      required: true
+      default: "main"
+    repository:
+      description: "The git repository to checkout"
+      required: false
+      type: string
+
  #pull_request:
  #   types: [closed]
  #   branches: [test_concurrency]
@@ -68,7 +68,7 @@ jobs:
 
   release:
     needs: check_operand
-    if: needs.check_operand.outputs.changed == 'true'
+    if: needs.check_operand.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
