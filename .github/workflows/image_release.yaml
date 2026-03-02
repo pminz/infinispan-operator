@@ -73,9 +73,19 @@ jobs:
     steps:
       - name: Debug output
         run: echo "Changed = ${{ needs.check_operand.outputs.changed }}"
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: test_concurrency
+          repository: ${{ github.repository }}
+          token: ${{ secrets.PAT }}
+          path: operator
+
       - name: Release
         run: echo "Release"
       - name: Add operand to opernad file
+        working-directory: operator
         run: |
            echo "${{ needs.check_operand.outputs.latest_version }}" > operand_version.txt
            git add operand_version.txt
