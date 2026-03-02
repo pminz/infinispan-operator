@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.check.outputs.changed }}
+      latest_version: ${{ steps.get_version.outputs.latest_version }}
 
     steps:
       - name: Configure Git
@@ -40,44 +41,47 @@ jobs:
           token: ${{ secrets.PAT }}
           path: operator
 
-      - name: Debug file history
-        working-directory: operator
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Files in operator:"
-          ls -R | head -20
-          COMMITS=($(git log -2 --pretty=format:%H -- config/manager/manager.yaml))
-          echo "Commits found: ${COMMITS[@]}"
-
       - name: Check if operand changed
         id: check
         working-directory: operator
         run: |
-          COMMITS=($(git log -2 --pretty=format:%H -- config/manager/manager.yaml))
-          echo "Latest commit: ${COMMITS[0]}"
-          echo "Previous commit: ${COMMITS[1]}"
+          # Latest operand version in current commit
+          LATEST_VERSION=$(yq e '.. | select(has("name") and .name=="INFINISPAN_OPERAND_VERSIONS") | .value' config/manager/manager.yaml | jq -r '.[]."upstream-version"' | sort -V | tail -n1)
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+          # Last released operator
+          last_operator=$(cat version.txt)
+          echo $last_operator
           
-          if [ ${#COMMITS[@]} -lt 2 ]; then
+          # Last released operand version (from tag, branch, or file)
+          LAST_VERSION=$(git show origin/2.5.1:operand_version.txt 2>/dev/null || echo "0.0.0")
+          echo $LAST_VERSION
+          test_VERSION=$(git show 2.5.1:operand_version.txt  || echo "0.0.0")
+          echo $test_VERSION
+          
+          if [ "$LATEST_VERSION" = "$LAST_VERSION" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
-            if git diff --quiet ${COMMITS[1]} ${COMMITS[0]} -- config/manager/manager.yaml; then
-              echo "changed=false" >> $GITHUB_OUTPUT
-            else
-              echo "changed=true" >> $GITHUB_OUTPUT
-            fi
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
 
   release:
     needs: check_operand
-    #if: needs.check_operand.outputs.changed == 'true'
+    if: needs.check_operand.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
         run: echo "Changed = ${{ needs.check_operand.outputs.changed }}"
       - name: Release
-        if: needs.check_operand.outputs.changed == 'true'
         run: echo "Release"
+      - name: Add operand to opernad file
+        run: |
+           echo "${{ needs.check_operand.outputs.latest_version }}" > operand_version.txt
+           git add operand_version.txt
+           git commit -m "Add latest operand released"
+           git push origin test_concurrency
+
 
       #- name: Authenticate gh
       #  env:
