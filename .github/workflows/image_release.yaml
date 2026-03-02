@@ -74,6 +74,11 @@ jobs:
       - name: Debug output
         run: echo "Changed = ${{ needs.check_operand.outputs.changed }}"
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "pminz"
+          git config --global user.email "pminz@redhat.com"
+
       - name: Checkout
         uses: actions/checkout@v6
         with:
