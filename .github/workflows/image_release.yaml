@@ -54,10 +54,8 @@ jobs:
           echo $last_operator
           
           # Last released operand version (from tag, branch, or file)
-          LAST_VERSION=$(git show origin/2.5.1:operand_version.txt 2>/dev/null || echo "0.0.0")
+          LAST_VERSION=$(git show origin/test_concurrency:operand_version.txt 2>/dev/null || echo "0.0.0")
           echo $LAST_VERSION
-          test_VERSION=$(git show 2.5.1:operand_version.txt  || echo "0.0.0")
-          echo $test_VERSION
           
           if [ "$LATEST_VERSION" = "$LAST_VERSION" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
