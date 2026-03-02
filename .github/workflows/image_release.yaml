@@ -34,11 +34,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           ref: test_concurrency
           repository: ${{ github.repository }}
           token: ${{ secrets.PAT }}
           path: operator
+
+      - name: Debug file history
+        working-directory: operator
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in operator:"
+          ls -R | head -20
+          COMMITS=($(git log -2 --pretty=format:%H -- config/manager/manager.yaml))
+          echo "Commits found: ${COMMITS[@]}"
 
       - name: Check if operand changed
         id: check
