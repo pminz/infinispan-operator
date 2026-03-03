@@ -54,7 +54,7 @@ jobs:
           echo $last_operator
           
           # Last released operand version (from tag, branch, or file)
-          LAST_VERSION=$(git cat-file -p origin/test_concurrency:operand_version.txt 2>/dev/null)
+          LAST_VERSION=$(git show  origin/test_concurrency:operand_version.txt)
           echo $LAST_VERSION
           
           if [ -n "$LATEST_VERSION" ] && [ -n "$LAST_VERSION" ] && [ "$LATEST_VERSION" != "$LAST_VERSION" ]; then
