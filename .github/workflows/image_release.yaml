@@ -91,7 +91,7 @@ jobs:
 
   release:
     needs: check_operand
-    if: (needs.check_operand.outputs.changed == 'true' && steps.check_pr.outputs.skip != 'true') || github.event_name == 'workflow_dispatch'
+    if: (needs.check_operand.outputs.changed == 'true' && needs.check_pr.outputs.skip != 'true') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
