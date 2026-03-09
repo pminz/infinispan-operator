@@ -49,14 +49,14 @@ jobs:
           PR1=$(gh pr list \
             --repo infinispan-qe-bot/community-operators \
             --head infinispan-qe-bot:pr_request \
-            --state closed \
+            --state open \
             --json number \
             --jq 'length')
 
           PR2=$(gh pr list \
             --repo infinispan-qe-bot/community-operators-prod \
             --head infinispan-qe-bot:pr_request \
-            --state closed \
+            --state open \
             --json number \
             --jq 'length')
 
