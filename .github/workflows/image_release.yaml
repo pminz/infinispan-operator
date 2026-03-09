@@ -41,34 +41,57 @@ jobs:
           token: ${{ secrets.PAT }}
           path: operator
 
-      - name: Check if operand changed
-        id: check
+      - name: Check open PRs from forks
+        id: check_pr_status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR1=$(gh pr list \
+            --repo infinispan-qe-bot/community-operators \
+            --head infinispan-qe-bot:pr_request \
+            --state open \
+            --json number \
+            --jq 'length')
+
+          PR2=$(gh pr list \
+            --repo infinispan-qe-bot/community-operators-prod \
+            --head infinispan-qe-bot:pr_request \
+            --state open \
+            --json number \
+            --jq 'length')
+
+          echo "Fork1 PR count: $PR1"
+          echo "Fork2 PR count: $PR2"
+
+          if [ "$PR1" -gt 0 ] || [ "$PR2" -gt 0 ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi  
+
+      - name: Check if new operand added
+        id: check_operand
         working-directory: operator
         run: |
-          # Latest operand version in current commit
-          LATEST_VERSION=$(yq e '.. | select(has("name") and .name=="INFINISPAN_OPERAND_VERSIONS") | .value' config/manager/manager.yaml | jq -r '.[]."upstream-version"' | sort -V | tail -n1)
-          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
-
-          # Last released operator
-          last_operator=$(cat version.txt)
-          echo $last_operator
-          
-          # Last released operand version (from tag, branch, or file)
-          LAST_VERSION=$(git show  origin/test_concurrency:operand_version.txt)
-          echo $LAST_VERSION
-          
-          if [ -n "$LATEST_VERSION" ] && [ -n "$LAST_VERSION" ] && [ "$LATEST_VERSION" != "$LAST_VERSION" ]; then
-             echo "changed=true" >> $GITHUB_OUTPUT
-             echo "New operand detected: $LATEST_VERSION"
+          LAST_TAG=$(git describe --tags --abbrev=0)
+      
+          echo "Last release tag: $LAST_TAG"
+      
+          ADDED=$(git diff $LAST_TAG HEAD -- config/manager/manager.yaml | grep '^+' | grep '"upstream-version"' || true)
+      
+          echo "Added operand:"
+          echo "$ADDED"
+      
+          if [ -n "$ADDED" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-             echo "changed=false" >> $GITHUB_OUTPUT
-             echo "No new operand added or last released version missing."
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
 
   release:
     needs: check_operand
-    if: needs.check_operand.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    if: (needs.check_operand.outputs.changed == 'true' && steps.check_pr.outputs.skip != 'true') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
@@ -92,11 +115,7 @@ jobs:
       - name: Add operand to opernad file
         working-directory: operator
         run: |
-           echo "${{ needs.check_operand.outputs.latest_version }}" > operand_version.txt
-           git add operand_version.txt
-           git commit -m "Add latest operand released"
-           git push origin test_concurrency
-
+          echo "Testing worked"
 
       #- name: Authenticate gh
       #  env:
