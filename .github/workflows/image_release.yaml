@@ -75,6 +75,8 @@ jobs:
           LAST_TAG=$(git describe --tags --abbrev=0)
       
           echo "Last release tag: $LAST_TAG"
+
+          echo "last_tag=$LAST_TAG" >> $GITHUB_OUTPUT
       
           ADDED=$(git diff $LAST_TAG HEAD -- config/manager/manager.yaml | grep '^+' | grep '"upstream-version"' || true)
       
@@ -111,10 +113,24 @@ jobs:
 
       - name: Release
         run: echo "Release"
+
       - name: Add operand to opernad file
         working-directory: operator
         run: |
           echo "Testing worked"
+
+      - name: Trigger Post Release job
+        working-directory: operator
+        env:
+          REF: '"${{ github.ref_name }}"'
+          REL_VERSION: ${{ needs.check_operand.outputs.last_tag }}
+        uses: cardinalby/schedule-job-action@v1
+        with:
+          ghToken: ${{ secrets.PAT }}
+          targetBranch: 'test_pr'
+          templateYmlFile: 'operator/.github-scheduled-workflows/publish-main.yaml'
+          targetYmlFileName: publish-main.yaml
+          copyEnvVariables: REF REL_VERSION
 
       #- name: Authenticate gh
       #  env:
