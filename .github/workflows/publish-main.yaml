@@ -21,6 +21,13 @@ jobs:
         run: |
           echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
           echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.params.outputs.rel_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
     env:
       DELAYED_JOB_CHECKOUT_REF: e8293b73b37b10f92813f8bb4abd6f11760f1a34
       DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
