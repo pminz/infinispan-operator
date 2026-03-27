@@ -12,22 +12,18 @@ jobs:
           git config --global user.name "pminz"
           git config --global user.email "pminz@redhat.com"
 
-      - name: Test Post release Job
-        run: |
-          echo "The post release job was successful"
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: operator
+          ref: ${{ env.REF }}
+          token: ${{ secrets.PAT}}
 
-      #- name: Checkout
-      #  uses: actions/checkout@v6
-      #  with:
-      #    path: operator
-      #    ref: ${{ env.REF }}
-      #    token: ${{ secrets.INFINISPAN_RELEASE_TOKEN }}
-#
-      #- name: Set parameters
-      #  id: params
-      #  run: |
-      #    echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
-      #    echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
+      - name: Set parameters
+        id: params
+        run: |
+          echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
+          echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
 #
       #- name: Set Next Version
       #  id: set_version
