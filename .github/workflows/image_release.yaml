@@ -1,8 +1,6 @@
 name: Image Release
 
 on:
- schedule:
-    - cron: '* * * * *'
  workflow_dispatch:
   inputs:
     ref:
@@ -128,7 +126,7 @@ jobs:
         uses: cardinalby/schedule-job-action@v1
         with:
           ghToken: ${{ secrets.PAT }}
-          targetBranch: 'test_pr'
+          targetBranch: 'test_crelease'
           templateYmlFile: 'operator/.github-scheduled-workflows/publish-main.yaml'
           targetYmlFileName: publish-main.yaml
           copyEnvVariables: REF REL_VERSION
