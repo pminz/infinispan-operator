@@ -23,6 +23,7 @@ jobs:
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       latest_version: ${{ steps.check.outputs.latest_version }}
+      last_tag: ${{ steps.check_operand.outputs.last_tag }}
 
     steps:
       - name: Configure Git
@@ -104,7 +105,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: test_concurrency
+          ref: test_crelease
           repository: ${{ github.repository }}
           token: ${{ secrets.PAT }}
           path: operator
@@ -116,9 +117,8 @@ jobs:
         working-directory: operator
         run: |
           echo "Testing worked"
-          pwd
-          ls -lrth
-
+          echo "Output: ${{ needs.check_operand.outputs.last_tag }}"
+          
       - name: Trigger Post Release job
         env:
           REF: ${{ github.ref_name }}
