@@ -1,0 +1,30 @@
+name: Post Release Job
+'on':
+  schedule:
+    - cron: '*/30 * * * *'
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name "pminz"
+          git config --global user.email "pminz@redhat.com"
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          path: operator
+          ref: '${{ env.REF }}'
+          token: '${{ secrets.PAT}}'
+      - name: Set parameters
+        id: params
+        run: |
+          echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
+          echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
+    env:
+      DELAYED_JOB_CHECKOUT_REF: e8293b73b37b10f92813f8bb4abd6f11760f1a34
+      DELAYED_JOB_CHECKOUT_REF_IS_TAG: 'false'
+      DELAYED_JOB_WORKFLOW_FILE_PATH: .github/workflows/publish-main.yaml
+      DELAYED_JOB_WORKFLOW_UNSCHEDULE_TARGET_BRANCH: test_crelease
+      REF: test_crelease
+      REL_VERSION: 2.4.12.Final
