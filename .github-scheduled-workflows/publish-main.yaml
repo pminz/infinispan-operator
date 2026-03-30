@@ -1,7 +1,7 @@
 name: Post Release Job
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '* * * * *'
 
 jobs:
   main:
@@ -19,11 +19,18 @@ jobs:
           ref: ${{ env.REF }}
           token: ${{ secrets.PAT}}
 
-      - name: Set parameters
-        id: params
-        run: |
-          echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
-          echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
+      #- name: Set parameters
+      #  id: params
+      #  run: |
+      #    echo "ref=${{ env.REF }}" >> $GITHUB_OUTPUT
+      #    echo "rel_version=${{ env.REL_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.REL_VERSION  }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
 #
       #- name: Set Next Version
       #  id: set_version
