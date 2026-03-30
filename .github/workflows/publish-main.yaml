@@ -1,5 +1,5 @@
 name: Post Release Job
-'on':
+on:
   schedule:
     - cron: '* * * * *'
 jobs:
